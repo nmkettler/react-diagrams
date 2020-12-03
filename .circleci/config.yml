@@ -1,23 +1,7 @@
-version: 2
-jobs:
-  build:
-    docker:
-      - image: buildkite/puppeteer
-    working_directory: ~/repo
-    steps:
-      - checkout
-      - restore_cache:
-          keys:
-            - v1-dependencies-{{ checksum "yarn.lock" }}
-      - run: yarn install
-      - save_cache:
-          paths:
-            - node_modules
-          key: v1-dependencies-{{ checksum "yarn.lock" }}
-
-      # test building project
-      - run: yarn run build
-
-      # test e2e tests and jest snapshots
-      - run: cd packages/diagrams-demo-gallery && yarn run test --ci
-      - run: cd packages/react-diagrams-routing && yarn run test --ci
+version: 2.1
+orbs:
+  node: circleci/node@3.0.0
+workflows:
+  node-tests:
+    jobs:
+      - node/test
